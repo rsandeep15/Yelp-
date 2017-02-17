@@ -39,6 +39,7 @@ class BusinessCell: UITableViewCell {
         thumbnail.clipsToBounds = true
         
         nameLabel.preferredMaxLayoutWidth = nameLabel.frame.size.width
+        nameLabel.sizeToFit()
         
     }
     
