@@ -26,6 +26,7 @@ class YelpClient: BDBOAuth1RequestOperationManager {
     var accessSecret: String!
     var longitutde = "-122.406165"
     var latitude = "37.785771"
+    var offset = 0 
     
     
     //MARK: Shared Instance
@@ -54,9 +55,9 @@ class YelpClient: BDBOAuth1RequestOperationManager {
     func searchWithTerm(_ term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, completion: @escaping ([Business]?, Error?) -> Void) -> AFHTTPRequestOperation {
         // For additional parameters, see http://www.yelp.com/developers/documentation/v2/search_api
         
-        // Default the location to San Francisco
+        // Default the location to San Francisco; If user allows, sets to their current location
         
-        var parameters: [String : AnyObject] = ["term": term as AnyObject, "ll": "\(self.latitude),\(self.longitutde)" as AnyObject]
+        var parameters: [String : AnyObject] = ["term": term as AnyObject, "ll": "\(self.latitude),\(self.longitutde)" as AnyObject, "offset": offset as AnyObject]
         
         if sort != nil {
             parameters["sort"] = sort!.rawValue as AnyObject?

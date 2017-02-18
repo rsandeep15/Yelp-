@@ -30,7 +30,7 @@
                                         <rect key="frame" x="0.0" y="28" width="375" height="115"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="6u1-cd-qfo" id="0WY-UE-aQh">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="114.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="115"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="240" horizontalCompressionResistancePriority="754" verticalCompressionResistancePriority="753" translatesAutoresizingMaskIntoConstraints="NO" id="lWU-fR-4vX">
@@ -116,6 +116,7 @@
                                             <outlet property="ratingsView" destination="lWU-fR-4vX" id="2g0-uc-0rm"/>
                                             <outlet property="reviewCountLabel" destination="uv8-28-nSt" id="4qK-7y-7qZ"/>
                                             <outlet property="thumbnail" destination="J6e-2G-bah" id="HN5-m6-ggu"/>
+                                            <segue destination="iQ7-94-38Q" kind="show" id="Dve-6Z-fMM"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -137,6 +138,43 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fgb-4b-F1b" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2727.1999999999998" y="357.57121439280365"/>
+        </scene>
+        <!--Detail View Controller-->
+        <scene sceneID="Xm4-Yo-Qv6">
+            <objects>
+                <viewController id="iQ7-94-38Q" customClass="DetailViewController" customModule="Yelp" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="EiA-2z-Uef"/>
+                        <viewControllerLayoutGuide type="bottom" id="2pU-yr-9DV"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ieL-K9-V5A">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Business" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nwk-EG-6Ei">
+                                <rect key="frame" x="16" y="103" width="259" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="Psy-Yy-g8U"/>
+                                    <constraint firstAttribute="width" constant="259" id="VKH-Rn-Ry9"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="21"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="nwk-EG-6Ei" firstAttribute="top" secondItem="EiA-2z-Uef" secondAttribute="bottom" constant="39" id="geJ-nn-xjw"/>
+                            <constraint firstItem="nwk-EG-6Ei" firstAttribute="leading" secondItem="ieL-K9-V5A" secondAttribute="leading" constant="16" id="jTE-BF-PuA"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="businessName" destination="nwk-EG-6Ei" id="k1F-Ds-bsO"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="rfP-HH-p9C" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3616.8000000000002" y="357.57121439280365"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="xhM-rO-eL9">

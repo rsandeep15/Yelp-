@@ -9,7 +9,7 @@
 import UIKit
 import CoreLocation
 
-class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, CLLocationManagerDelegate{
+class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, CLLocationManagerDelegate, UIScrollViewDelegate{
     
     var businesses: [Business]!
     
@@ -18,6 +18,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     var searchBar: UISearchBar!
     
     var locationManager: CLLocationManager!
+    
+    var isMoreDataLoading = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,17 +44,21 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         locationManager.startUpdatingLocation()
         locationManager.startMonitoringSignificantLocationChanges()
         
-        /* Example of Yelp search with more search options specified
-         Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
-         self.businesses = businesses
-         
-         for business in businesses {
-         print(business.name!)
-         print(business.address!)
-         }
-         }
-         */
+    }
+    
+    func initialFetch() {
+                    Business.searchWithTerm(term: "Restaurants") { (businesses: [Business]?, error: Error?) -> Void in
+                        self.isMoreDataLoading = false
+                        if (self.businesses != nil) {
+                            self.businesses! += businesses!
+                        }
+                        else {
+                            self.businesses = businesses
+                        }
         
+                        self.tableView.reloadData()
+        
+                    }
     }
     
     override func didReceiveMemoryWarning() {
@@ -71,40 +77,55 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         
     }
     
-    
+    // Get the cell associated with a business from the table
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "businessCell", for: indexPath) as! BusinessCell
-        cell.business = businesses[indexPath.row] 
+        cell.business = businesses[indexPath.row]
+        cell.selectionStyle = .none
         return cell
     }
     
+    // Get more results of businesses matching the query to produce an infinite scroll
+    func fetchMoreResults() {
+        YelpClient.sharedInstance.offset = businesses.count
+        Business.searchWithTerm(term: (searchBar.text != nil) ? searchBar.text! : "Restaurants", completion: { (businesses: [Business]?, error: Error?) -> Void in
+            self.isMoreDataLoading = false
+            if (self.businesses != nil) {
+                self.businesses! += businesses!
+            }
+            else {
+                self.businesses = businesses
+            }
+            
+            self.tableView.reloadData()
+        });
+
+    }
     
     func doSearch() {
-        if (searchBar.text == ""){
+        if (searchBar.text?.isEmpty)!{
             Business.searchWithTerm(term: "Restaurants") { (businesses: [Business]?, error: Error?) -> Void in
-                self.businesses = businesses
+                self.isMoreDataLoading = false
+                if (self.businesses != nil) {
+                    self.businesses! = businesses!
+                }
+                else {
+                    self.businesses = businesses
+                }
+                
                 self.tableView.reloadData()
-//                if let businesses = businesses {
-//                    for business in businesses {
-//                        print(business.name!)
-//                        print(business.address!)
-//                    }
-//                }
 
             }  
 
         }
-        Business.searchWithTerm(term: searchBar.text!, completion: { (businesses: [Business]?, error: Error?) -> Void in
-            
-            self.businesses = businesses
-            self.tableView.reloadData()
-//            if let businesses = businesses {
-//                for business in businesses {
-//                    print(business.name!)
-//                    print(business.address!)
-//                }
-//            }
-        });
+        else {
+            Business.searchWithTerm(term: searchBar.text!, completion: { (businesses: [Business]?, error: Error?) -> Void in
+                self.isMoreDataLoading = false
+                self.businesses = businesses
+                self.tableView.reloadData()
+            });
+        }
+
     }
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -112,26 +133,47 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     }
     
+    // Search for restaurants near the user's location
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let myLoc = locations.first {
             YelpClient.sharedInstance.latitude = "\(myLoc.coordinate.latitude)"
             YelpClient.sharedInstance.longitutde = "\(myLoc.coordinate.longitude)"
             print("Location:\(myLoc.coordinate.latitude), \(myLoc.coordinate.longitude)")
-            doSearch()
+            initialFetch()
+        }
+    }
+    
+    // Creates an infinite scroll, that fetches new businesses when the user approaches the bottom of the feed
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if (!isMoreDataLoading){
+            // Calculate the position of one screen length before the bottom of the results
+            if (!isMoreDataLoading){
+                let scrollViewContentHeight = tableView.contentSize.height
+                let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
+                if (scrollView.contentOffset.y > scrollOffsetThreshold && tableView.isDragging){
+                    isMoreDataLoading = true
+                    fetchMoreResults()
+                }
+                
+            }
         }
     }
     
     
-    
-    
-    /*
+
      // MARK: - Navigation
-     
      // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
      // Get the new view controller using segue.destinationViewController.
      // Pass the selected object to the new view controller.
+        let cell = sender as! BusinessCell
+        let indexPath = tableView.indexPath(for: cell)
+        let business = businesses![(indexPath?.row)!]
+        
+        let detailViewController = segue.destination as! DetailViewController
+        detailViewController.business = business
+        
      }
-     */
+
     
 }
