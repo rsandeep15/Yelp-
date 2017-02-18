@@ -24,6 +24,9 @@ enum YelpSortMode: Int {
 class YelpClient: BDBOAuth1RequestOperationManager {
     var accessToken: String!
     var accessSecret: String!
+    var longitutde = "-122.406165"
+    var latitude = "37.785771"
+    
     
     //MARK: Shared Instance
     
@@ -41,6 +44,7 @@ class YelpClient: BDBOAuth1RequestOperationManager {
         
         let token = BDBOAuth1Credential(token: accessToken, secret: accessSecret, expiration: nil)
         self.requestSerializer.saveAccessToken(token)
+        
     }
     
     func searchWithTerm(_ term: String, completion: @escaping ([Business]?, Error?) -> Void) -> AFHTTPRequestOperation {
@@ -51,7 +55,8 @@ class YelpClient: BDBOAuth1RequestOperationManager {
         // For additional parameters, see http://www.yelp.com/developers/documentation/v2/search_api
         
         // Default the location to San Francisco
-        var parameters: [String : AnyObject] = ["term": term as AnyObject, "ll": "37.785771,-122.406165" as AnyObject]
+        
+        var parameters: [String : AnyObject] = ["term": term as AnyObject, "ll": "\(self.latitude),\(self.longitutde)" as AnyObject]
         
         if sort != nil {
             parameters["sort"] = sort!.rawValue as AnyObject?

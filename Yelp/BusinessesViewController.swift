@@ -7,12 +7,17 @@
 //
 
 import UIKit
+import CoreLocation
 
-class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, CLLocationManagerDelegate{
     
     var businesses: [Business]!
     
     @IBOutlet weak var tableView: UITableView!
+    
+    var searchBar: UISearchBar!
+    
+    var locationManager: CLLocationManager!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,19 +25,22 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120
-        Business.searchWithTerm(term: "Thai", completion: { (businesses: [Business]?, error: Error?) -> Void in
-            
-            self.businesses = businesses
-            self.tableView.reloadData()
-            if let businesses = businesses {
-                for business in businesses {
-                    print(business.name!)
-                    print(business.address!)
-                }
-            }
-            
-            }
-        )
+        
+        searchBar = UISearchBar()
+        searchBar.sizeToFit()
+        searchBar.delegate = self
+        
+        self.navigationItem.titleView = searchBar
+        
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        
+        self.locationManager.requestWhenInUseAuthorization()
+        locationManager.distanceFilter = kCLLocationAccuracyHundredMeters
+    
+        locationManager.startUpdatingLocation()
+        locationManager.startMonitoringSignificantLocationChanges()
         
         /* Example of Yelp search with more search options specified
          Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
@@ -70,7 +78,49 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         return cell
     }
     
+    
+    func doSearch() {
+        if (searchBar.text == ""){
+            Business.searchWithTerm(term: "Restaurants") { (businesses: [Business]?, error: Error?) -> Void in
+                self.businesses = businesses
+                self.tableView.reloadData()
+//                if let businesses = businesses {
+//                    for business in businesses {
+//                        print(business.name!)
+//                        print(business.address!)
+//                    }
+//                }
 
+            }  
+
+        }
+        Business.searchWithTerm(term: searchBar.text!, completion: { (businesses: [Business]?, error: Error?) -> Void in
+            
+            self.businesses = businesses
+            self.tableView.reloadData()
+//            if let businesses = businesses {
+//                for business in businesses {
+//                    print(business.name!)
+//                    print(business.address!)
+//                }
+//            }
+        });
+    }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        doSearch()
+    
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let myLoc = locations.first {
+            YelpClient.sharedInstance.latitude = "\(myLoc.coordinate.latitude)"
+            YelpClient.sharedInstance.longitutde = "\(myLoc.coordinate.longitude)"
+            print("Location:\(myLoc.coordinate.latitude), \(myLoc.coordinate.longitude)")
+            doSearch()
+        }
+    }
+    
     
     
     
