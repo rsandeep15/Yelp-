@@ -8,8 +8,7 @@ target 'Yelp' do
   # Pods for Yelp
   pod 'AFNetworking', '~> 2.5'
   pod 'BDBOAuth1Manager'
-  #pod 'GoogleMaps'
-  #pod 'GooglePlaces'
+  pod 'GoogleMaps'
 
   target 'YelpTests' do
     inherit! :search_paths

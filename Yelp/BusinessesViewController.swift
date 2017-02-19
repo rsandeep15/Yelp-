@@ -21,19 +21,25 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     var isMoreDataLoading = false
     
+    @IBOutlet weak var resultsMap: UIBarButtonItem!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Setup the table view
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120
         
+        // Add a search bar to the table
         searchBar = UISearchBar()
         searchBar.sizeToFit()
         searchBar.delegate = self
         
         self.navigationItem.titleView = searchBar
         
+        // Allow the app to get the user's location
         locationManager = CLLocationManager()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -41,24 +47,29 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         self.locationManager.requestWhenInUseAuthorization()
         locationManager.distanceFilter = kCLLocationAccuracyHundredMeters
     
+        // Update location every time user moves 100 meters
         locationManager.startUpdatingLocation()
         locationManager.startMonitoringSignificantLocationChanges()
         
+        
+        
     }
+
     
+    // Get an initial listing of businesses as restaurants near the user
     func initialFetch() {
-                    Business.searchWithTerm(term: "Restaurants") { (businesses: [Business]?, error: Error?) -> Void in
-                        self.isMoreDataLoading = false
-                        if (self.businesses != nil) {
-                            self.businesses! += businesses!
-                        }
-                        else {
-                            self.businesses = businesses
-                        }
-        
-                        self.tableView.reloadData()
-        
-                    }
+        Business.searchWithTerm(term: "Restaurants") { (businesses: [Business]?, error: Error?) -> Void in
+            self.isMoreDataLoading = false
+            if (self.businesses != nil) {
+                self.businesses! += businesses!
+            }
+            else {
+                self.businesses = businesses
+            }
+
+            self.tableView.reloadData()
+
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -66,7 +77,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         // Dispose of any resources that can be recreated.
     }
     
-    
+    // Set the number of rows in the table to be equal to the number of matching businesses
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if businesses != nil{
             return businesses.count
@@ -103,6 +114,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func doSearch() {
+        // If the search bar is empty, simply return restaurants
         if (searchBar.text?.isEmpty)!{
             Business.searchWithTerm(term: "Restaurants") { (businesses: [Business]?, error: Error?) -> Void in
                 self.isMoreDataLoading = false
@@ -118,6 +130,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             }  
 
         }
+            
+        // Otherwise, load up businesses
         else {
             Business.searchWithTerm(term: searchBar.text!, completion: { (businesses: [Business]?, error: Error?) -> Void in
                 self.isMoreDataLoading = false
@@ -128,6 +142,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
 
     }
 
+    // Perform the search when the search bar's text is changed
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         doSearch()
     
@@ -159,20 +174,23 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    
-
-     // MARK: - Navigation
      // In a storyboard-based application, you will often want to do a little preparation before navigation
      override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-        let cell = sender as! BusinessCell
-        let indexPath = tableView.indexPath(for: cell)
-        let business = businesses![(indexPath?.row)!]
-        
-        let detailViewController = segue.destination as! DetailViewController
-        detailViewController.business = business
-        
+    
+        if (segue.identifier == "viewMap"){
+            let mapViewController = segue.destination as! MapViewController
+            mapViewController.businesses = businesses;
+        }
+        if (segue.identifier == "detailedView"){
+            // Get the new view controller using segue.destinationViewController.
+            // Pass the selected object to the new view controller.
+            let cell = sender as! BusinessCell
+            let indexPath = tableView.indexPath(for: cell)
+            let business = businesses![(indexPath?.row)!]
+            
+            let detailViewController = segue.destination as! DetailViewController
+            detailViewController.business = business
+        }
      }
 
     

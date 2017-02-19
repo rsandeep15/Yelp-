@@ -23,15 +23,22 @@ PODS:
   - BDBOAuth1Manager (1.6.0):
     - AFNetworking/NSURLConnection (~> 2.6.0)
     - AFNetworking/NSURLSession (~> 2.6.0)
+  - GoogleMaps (2.2.0):
+    - GoogleMaps/Maps (= 2.2.0)
+  - GoogleMaps/Base (2.2.0)
+  - GoogleMaps/Maps (2.2.0):
+    - GoogleMaps/Base
 
 DEPENDENCIES:
   - AFNetworking (~> 2.5)
   - BDBOAuth1Manager
+  - GoogleMaps
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
   BDBOAuth1Manager: cd5a5872f355ca38180d52ca2dd844f0b0c84797
+  GoogleMaps: 104c418d61ab8a05dff06ed0784c25ea9d37da45
 
-PODFILE CHECKSUM: ae688b904eeb30eb1c96526903477e737051d5d7
+PODFILE CHECKSUM: 17d257fb87ee5e27e802cc8206e5dbe4a8848bef
 
 COCOAPODS: 1.2.0
