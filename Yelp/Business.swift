@@ -17,6 +17,9 @@ class Business: NSObject {
     let ratingImageURL: URL?
     let reviewCount: NSNumber?
     
+    var latitude: Double?
+    var longitude: Double?
+    
     init(dictionary: NSDictionary) {
         name = dictionary["name"] as? String
         
@@ -41,6 +44,13 @@ class Business: NSObject {
                     address += ", "
                 }
                 address += neighborhoods![0] as! String
+            }
+            
+            // Save off coordinates for Google Maps markers
+            let coordinate = location!["coordinate"] as? NSDictionary
+            if coordinate != nil && coordinate!.count > 0 {
+                self.latitude = Double(coordinate?["latitude"] as! NSNumber)
+                self.longitude = Double(coordinate?["longitude"] as! NSNumber)
             }
         }
         self.address = address

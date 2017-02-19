@@ -30,7 +30,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 120
+        tableView.estimatedRowHeight = 140
         
         // Add a search bar to the table
         searchBar = UISearchBar()

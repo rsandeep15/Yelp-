@@ -13,31 +13,34 @@ class MapViewController: UIViewController {
 
     var businesses: [Business]!
     var yelpClient = YelpClient.sharedInstance
+    var mapView : GMSMapView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        var business = businesses.first
-        let camera = GMSCameraPosition.camera(withLatitude: Double(yelpClient.latitude)!, longitude: Double(yelpClient.longitutde)!, zoom: 5.0)
-        let mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
+        let camera = GMSCameraPosition.camera(withLatitude: Double(yelpClient.latitude)!, longitude: Double(yelpClient.longitutde)!, zoom: 13.0)
+        mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
+        for business in businesses{
+            let position = CLLocationCoordinate2D(latitude: business.latitude!, longitude: business.longitude!)
+            let marker = GMSMarker(position: position)
+            marker.title = business.name
+            marker.map = mapView
+        }
+        mapView.isMyLocationEnabled = true
         view = mapView
+        
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
