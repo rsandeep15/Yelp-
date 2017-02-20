@@ -53,6 +53,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         
         self.navigationItem.titleView = searchBar
         
+        initialFetch()
+        
         // Allow the app to get the user's location
         locationManager = CLLocationManager()
         locationManager.delegate = self
