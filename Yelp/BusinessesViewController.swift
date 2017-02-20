@@ -23,8 +23,21 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @IBOutlet weak var resultsMap: UIBarButtonItem!
     
+    var loadingMoreview:InfiniteScrollActivityView?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Set up Infinite Scroll loading indicator
+        let frame = CGRect(x: 0, y: tableView.contentSize.height, width: tableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
+        loadingMoreview = InfiniteScrollActivityView(frame: frame)
+        loadingMoreview!.isHidden = true
+        loadingMoreview?.tintColor = UIColor.red
+        tableView.addSubview(loadingMoreview!)
+        
+        var insets = tableView.contentInset
+        insets.bottom += InfiniteScrollActivityView.defaultHeight
+        tableView.contentInset = insets
         
         // Setup the table view
         tableView.delegate = self
@@ -98,7 +111,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     // Get more results of businesses matching the query to produce an infinite scroll
     func fetchMoreResults() {
-        YelpClient.sharedInstance.offset = businesses.count
+        YelpClient.sharedInstance.offset = businesses!.count
         Business.searchWithTerm(term: (searchBar.text != nil) ? searchBar.text! : "Restaurants", completion: { (businesses: [Business]?, error: Error?) -> Void in
             self.isMoreDataLoading = false
             if (self.businesses != nil) {
@@ -107,26 +120,23 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             else {
                 self.businesses = businesses
             }
+            // Stop the loading indicator
+            self.loadingMoreview!.stopAnimating()
             
+            // Refresh the table
             self.tableView.reloadData()
         });
 
     }
     
+    // Get search results based on input to search bar
     func doSearch() {
         // If the search bar is empty, simply return restaurants
         if (searchBar.text?.isEmpty)!{
             Business.searchWithTerm(term: "Restaurants") { (businesses: [Business]?, error: Error?) -> Void in
                 self.isMoreDataLoading = false
-                if (self.businesses != nil) {
-                    self.businesses! = businesses!
-                }
-                else {
-                    self.businesses = businesses
-                }
-                
+                self.businesses = businesses
                 self.tableView.reloadData()
-
             }  
 
         }
@@ -166,6 +176,12 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                 let scrollViewContentHeight = tableView.contentSize.height
                 let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
                 if (scrollView.contentOffset.y > scrollOffsetThreshold && tableView.isDragging){
+                    // Update position of the loadingMoreView, and start loading indicator
+                    let frame = CGRect(x: 0, y: tableView.contentSize.height, width: tableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
+                    loadingMoreview?.frame = frame
+                    loadingMoreview!.startAnimating()
+                    
+                    // Code to load more data
                     isMoreDataLoading = true
                     fetchMoreResults()
                 }

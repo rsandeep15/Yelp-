@@ -53,7 +53,13 @@ class Business: NSObject {
                 self.longitude = Double(coordinate?["longitude"] as! NSNumber)
             }
         }
-        self.address = address
+        if (address == ""){
+            self.address = "Address Unavailable"
+        }
+        else {
+            self.address = address
+        }
+        
         
         let categoriesArray = dictionary["categories"] as? [[String]]
         if categoriesArray != nil {
