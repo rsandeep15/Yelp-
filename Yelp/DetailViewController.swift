@@ -10,16 +10,6 @@ import UIKit
 import GoogleMaps
 
 class DetailViewController: UIViewController {
-
-//    @IBOutlet weak var thumbnail: UIImageView!
-//    @IBOutlet weak var nameLabel: UILabel!
-//    @IBOutlet weak var cuisineLabel: UILabel!
-//    @IBOutlet weak var ratingsView: UIImageView!
-//    @IBOutlet weak var mapView: GMSMapView!
-//    @IBOutlet weak var reviewCountLabel: UILabel!
-//    @IBOutlet weak var distanceLabel: UILabel!
-//    
-//    @IBOutlet weak var addressLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var thumbnail: UIImageView!
     @IBOutlet weak var mapView: GMSMapView!
