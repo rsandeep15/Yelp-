@@ -41,6 +41,9 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 Describe any challenges encountered while building the app.
 
+- Getting the detailed view to work in landscape mode. Ended up just supporting app in portrait. 
+- Getting autolayout to work out and not truncate text 
+
 ## License
 
     Copyright [2017] [Sandeep Raghunandhan]
