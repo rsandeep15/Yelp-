@@ -27,7 +27,10 @@ class DetailViewController: UIViewController {
         
         // Set all labels with values in business model object
         nameLabel.text = business.name
+        nameLabel.preferredMaxLayoutWidth = nameLabel.frame.size.width
         if business!.imageURL != nil {
+            thumbnail.layer.cornerRadius = 4
+            thumbnail.clipsToBounds = true
             thumbnail.setImageWith(business!.imageURL!)
         }
         ratingsView.setImageWith(business!.ratingImageURL!)
@@ -53,6 +56,11 @@ class DetailViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        nameLabel.preferredMaxLayoutWidth = nameLabel.frame.size.width
     }
     
 }
