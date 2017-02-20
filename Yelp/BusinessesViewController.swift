@@ -35,6 +35,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         loadingMoreview?.tintColor = UIColor.red
         tableView.addSubview(loadingMoreview!)
         
+        // Added scroll indicator to bottom of table
         var insets = tableView.contentInset
         insets.bottom += InfiniteScrollActivityView.defaultHeight
         tableView.contentInset = insets

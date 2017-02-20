@@ -10,6 +10,7 @@ import UIKit
 import GoogleMaps
 
 class DetailViewController: UIViewController {
+    // All UI elements
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var thumbnail: UIImageView!
     @IBOutlet weak var mapView: GMSMapView!
@@ -23,6 +24,8 @@ class DetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Set all labels with values in business model object
         nameLabel.text = business.name
         if business!.imageURL != nil {
             thumbnail.setImageWith(business!.imageURL!)
@@ -33,6 +36,7 @@ class DetailViewController: UIViewController {
         reviewCountLabel.text = "\(business.reviewCount!) Reviews"
         distanceLabel.text = business.distance
         
+        // Create a map with marker at the business
         if let coordinateLat = business.latitude! as Double?, let coordinateLong = business.longitude! as Double? {
             // Map View Setup
             let camera = GMSCameraPosition.camera(withLatitude: coordinateLat, longitude: coordinateLong, zoom: 14.0)
@@ -44,12 +48,11 @@ class DetailViewController: UIViewController {
             mapView.isMyLocationEnabled = true
             
         }
-
-        // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
 }

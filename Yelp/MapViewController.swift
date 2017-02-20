@@ -18,7 +18,7 @@ class MapViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Do any additional setup after loading the view.
+        // Create a map with markers at all business results
         let camera = GMSCameraPosition.camera(withLatitude: Double(yelpClient.latitude)!, longitude: Double(yelpClient.longitutde)!, zoom: 13.0)
         mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
         for business in businesses{
@@ -27,6 +27,8 @@ class MapViewController: UIViewController {
             marker.title = business.name
             marker.map = mapView
         }
+        
+        // Add my current location to the map 
         mapView.isMyLocationEnabled = true
         view = mapView
         

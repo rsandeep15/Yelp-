@@ -10,6 +10,7 @@ import UIKit
 
 class BusinessCell: UITableViewCell {
 
+    // All UI elements
     @IBOutlet weak var thumbnail: UIImageView!
     @IBOutlet weak var ratingsView: UIImageView!
     @IBOutlet weak var addressLabel: UILabel!
@@ -18,6 +19,7 @@ class BusinessCell: UITableViewCell {
     @IBOutlet weak var distanceLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
     
+    // Set UI elements with values in business model object
     var business : Business! {
         didSet {
             nameLabel.text = business.name
@@ -40,11 +42,14 @@ class BusinessCell: UITableViewCell {
         thumbnail.layer.cornerRadius = 4
         thumbnail.clipsToBounds = true
 
+        // Adjust label size to the max preferred with
         nameLabel.preferredMaxLayoutWidth = nameLabel.frame.size.width
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        
+        // Make sure rotation doesn't break anything 
         nameLabel.preferredMaxLayoutWidth = nameLabel.frame.size.width
     }
     
