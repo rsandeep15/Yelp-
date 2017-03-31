@@ -52,23 +52,26 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         searchBar.delegate = self
         
         self.navigationItem.titleView = searchBar
-        
-        initialFetch()
-        
         // Allow the app to get the user's location
         locationManager = CLLocationManager()
         locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         
         self.locationManager.requestWhenInUseAuthorization()
-        locationManager.distanceFilter = kCLLocationAccuracyHundredMeters
+    }
     
-        // Update location every time user moves 100 meters
-        locationManager.startUpdatingLocation()
-        locationManager.startMonitoringSignificantLocationChanges()
-        
-        
-        
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        let authStatus = CLLocationManager.authorizationStatus()
+        if (authStatus == CLAuthorizationStatus.denied) {
+            initialFetch()
+        }
+        else if (authStatus == CLAuthorizationStatus.authorizedWhenInUse){
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.distanceFilter = kCLLocationAccuracyHundredMeters
+            
+            // Update location every time user moves 100 meters
+            locationManager.startUpdatingLocation()
+            locationManager.startMonitoringSignificantLocationChanges()
+        }
     }
 
     
@@ -114,7 +117,12 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     // Get more results of businesses matching the query to produce an infinite scroll
     func fetchMoreResults() {
-        YelpClient.sharedInstance.offset = businesses!.count
+        if let businesses = businesses {
+            YelpClient.sharedInstance.offset = businesses.count
+        }
+        else {
+            YelpClient.sharedInstance.offset = 0
+        }
         Business.searchWithTerm(term: (searchBar.text != nil) ? searchBar.text! : "Restaurants", completion: { (businesses: [Business]?, error: Error?) -> Void in
             self.isMoreDataLoading = false
             if (self.businesses != nil) {
